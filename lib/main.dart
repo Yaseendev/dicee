@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:shake/shake.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   return runApp(
@@ -25,39 +27,60 @@ class DicePage extends StatefulWidget {
 class _DicePageState extends State<DicePage> {
   int leftDiceNum = 1;
   int rightDiceNum = 1;
+  int sum = 0;
 
-  void randomizeDice(){
+
+  @override
+  void initState() {
+    super.initState();
+    ShakeDetector.autoStart(onPhoneShake: (){
+      randomizeDice();
+      print('Shaked!');
+    });
+  }
+
+  void randomizeDice() {
     setState(() {
       leftDiceNum = Random().nextInt(6) + 1;
-     rightDiceNum=Random().nextInt(6) + 1;
+      rightDiceNum = Random().nextInt(6) + 1;
+      sum = leftDiceNum + rightDiceNum;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: FlatButton(
-                child: Image.asset('images/dice$leftDiceNum.png'),
-                onPressed: () {
-                 randomizeDice();
-                }),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: FlatButton(
-              child: Image.asset('images/dice2.png'),
-              onPressed: ()=>randomizeDice(),
-            ),
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    return Column(
+      children: [
+        sum == 0
+            ? Text(
+                'Shake To Roll!',
+                style: TextStyle(fontSize: 90.0, color: Colors.white),
+                textAlign: TextAlign.center,
+              )
+            : Text(sum.toString(),
+                style: TextStyle(fontSize: 180.0, color: Colors.white)),
+        Center(
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                      child: Image.asset('images/dice$leftDiceNum.png'),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                    child: Image.asset('images/dice$rightDiceNum.png'),
+                ),
+              ),
+            ],
           ),
         ),
       ],
     );
   }
 }
-
