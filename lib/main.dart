@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:shake/shake.dart';
 import 'package:flutter/services.dart';
+import 'package:vibration/vibration.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 void main() {
   return runApp(
@@ -29,12 +31,13 @@ class _DicePageState extends State<DicePage> {
   int rightDiceNum = 1;
   int sum = 0;
 
-
   @override
   void initState() {
     super.initState();
-    ShakeDetector.autoStart(onPhoneShake: (){
+    ShakeDetector.autoStart(onPhoneShake: () {
+      Vibration.vibrate(duration: 100);
       randomizeDice();
+      AudioCache().play('number$sum.wav');
       print('Shaked!');
     });
   }
@@ -68,13 +71,13 @@ class _DicePageState extends State<DicePage> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                      child: Image.asset('images/dice$leftDiceNum.png'),
+                  child: Image.asset('assets/images/dice$leftDiceNum.png'),
                 ),
               ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                    child: Image.asset('images/dice$rightDiceNum.png'),
+                  child: Image.asset('assets/images/dice$rightDiceNum.png'),
                 ),
               ),
             ],
